@@ -14,7 +14,7 @@ START_BALANCE = 1000
 CURRENCY = "Olmos"
 
 # Diqqat! KANAL_ID qismiga o'zingizning kanalingiz userneymini yozib qo'ying (boshiga @ bilan)
-KANAL_ID = "@mening_kanalim"  
+KANAL_ID = "@opencase_case"  
 # ====================================================
 
 # Render xostingidan havola olganimizdan keyin bu URL avtomatlashtiriladi
