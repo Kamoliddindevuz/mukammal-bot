@@ -1,4 +1,4 @@
-import logging
+import random
 import asyncio
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
@@ -169,11 +169,16 @@ async def user_profile(user_id: int):
 async def api_open_case(user_id: int):
     if users_db[user_id]["balance"] >= 200:
         users_db[user_id]["balance"] -= 200
-        # 200 olmos yechib, 500 olmos yutuq berish logikasi
-        users_db[user_id]["balance"] += 500
-        return {"success": True, "msg": "🎉 Keys ochildi! Siz 500 {CURRENCY} yutdingiz!", "new_balance": users_db[user_id]["balance"]}
-    else:
-        return {"success": False, "msg": "❌ Balansda yetarli {CURRENCY} mavjud emas!"}
+        
+        # 20 dan 5000 gacha tasodifiy (random) yutuq tanlash
+        reward = random.randint(20, 5000)
+        users_db[user_id]["balance"] += reward
+        
+        return {
+            "success": True, 
+            "msg": f"🔑 Keys ochildi! Siz {reward} {CURRENCY} yutdingiz!", 
+            "new_balance": users_db[user_id]["balance"]
+        }
 
 @app.get("/api/bonus/{user_id}")
 async def api_bonus(user_id: int):
