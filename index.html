@@ -11,6 +11,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
         }
 
         body {
@@ -30,7 +31,7 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
-            padding: 30px;
+            padding: 25px;
             width: 100%;
             max-width: 380px;
             text-align: center;
@@ -38,27 +39,13 @@
         }
 
         .profile-section {
-            margin-bottom: 25px;
-        }
-
-        .avatar-glow {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(45deg, #00f2fe, #4facfe);
-            border-radius: 50%;
-            margin: 0 auto 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
+            margin-bottom: 15px;
         }
 
         h1 {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 600;
             margin-bottom: 5px;
-            letter-spacing: 0.5px;
         }
 
         .status-badge {
@@ -67,60 +54,70 @@
             color: #00f2fe;
             padding: 4px 12px;
             border-radius: 12px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
-            text-transform: uppercase;
         }
 
         .balance-card {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 25px;
+            padding: 12px;
+            margin: 15px 0;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .balance-title {
-            font-size: 12px;
+            font-size: 11px;
             color: #aaa;
             text-transform: uppercase;
         }
 
         .balance-value {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
-            color: #fff;
+            color: #ffd700;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
             margin-top: 5px;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        /* Klik qilish uchun asosiy doira (Tanga) */
+        .click-area {
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, #ff007f, #7928ca);
+            border-radius: 50%;
+            margin: 25px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 70px;
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(255, 0, 127, 0.5);
+            transition: transform 0.1s ease;
+            position: relative;
+        }
+
+        .click-area:active {
+            transform: scale(0.92);
         }
 
         .btn-grid {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            margin-top: 15px;
         }
 
         .neon-btn {
-            background: linear-gradient(45deg, #ff007f, #7928ca);
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 16px;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3);
-        }
-
-        .neon-btn:active {
-            transform: scale(0.98);
-            box-shadow: 0 2px 5px rgba(255, 0, 127, 0.2);
-        }
-
-        .neon-btn.secondary {
-            background: linear-gradient(45deg, #00f2fe, #4facfe);
-            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.2);
         }
     </style>
 </head>
@@ -128,34 +125,52 @@
 
     <div class="app-container">
         <div class="profile-section">
-            <div class="avatar-glow">🚀</div>
-            <h1 id="username">Xush kelibsiz!</h1>
-            <span class="status-badge">Premium Foydalanuvchi</span>
+            <h1 id="username">Foydalanuvchi</h1>
+            <span class="status-badge">Koin Mayner</span>
         </div>
 
         <div class="balance-card">
-            <div class="balance-title">Sizning balansingiz</div>
-            <div class="balance-value">1,250 🪙</div>
+            <div class="balance-title">Yig'ilgan Tangalar</div>
+            <div id="balance" class="balance-value">0 🪙</div>
         </div>
 
+        <!-- Bosganda tanga beradigan joy -->
+        <div class="click-area" id="coinBtn">🚀</div>
+
         <div class="btn-grid">
-            <button class="neon-btn" onclick="sendData('🔥 Bonus olish')">Kunlik Bonus</button>
-            <button class="neon-btn secondary" onclick="sendData('🎮 Oʻyinga kirish')">Oʻyinni Boshlash</button>
+            <button class="neon-btn" onclick="saveAndClose()">Hamyonga o'tkazish & Yopish</button>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Saytni telefonda to'liq ekran ochadi
+        tg.expand();
 
-        // Telegramdan foydalanuvchi ismini olish
+        // Mahalliy xotiradan (LocalStore) tangalarni yuklash
+        let coins = parseInt(localStorage.getItem('user_coins')) || 0;
+        document.getElementById('balance').innerText = coins.toLocaleString() + " 🪙";
+
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
         }
 
-        function sendData(text) {
-            tg.sendData(text); // Tugma bosilganda botga xabar yuboradi
-            tg.close(); // Saytni yopadi
+        // Tanga bosilganda ishlaydigan funksiya
+        const coinBtn = document.getElementById('coinBtn');
+        coinBtn.addEventListener('click', (e) => {
+            coins += 1; // Har bosganda 1 tadan tanga qo'shadi
+            document.getElementById('balance').innerText = coins.toLocaleString() + " 🪙";
+            localStorage.setItem('user_coins', coins); // Telefon xotirasiga saqlaydi
+            
+            // Vibratsiya effektini berish (Telegram funksiyasi)
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('light');
+            }
+        });
+
+        // Ma'lumotni botga yuborib yopish
+        function saveAndClose() {
+            tg.sendData("💰 Balans yangilandi: " + coins + " tanga");
+            tg.close();
         }
     </script>
 </body>
