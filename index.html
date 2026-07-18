@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Web App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c1b, #24243e, #302b63);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        .app-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 30px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .profile-section {
+            margin-bottom: 25px;
+        }
+
+        .avatar-glow {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(0, 242, 254, 0.15);
+            color: #00f2fe;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .balance-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .balance-title {
+            font-size: 12px;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        .balance-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            margin-top: 5px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .btn-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .neon-btn {
+            background: linear-gradient(45deg, #ff007f, #7928ca);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 0, 127, 0.3);
+        }
+
+        .neon-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(255, 0, 127, 0.2);
+        }
+
+        .neon-btn.secondary {
+            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="profile-section">
+            <div class="avatar-glow">🚀</div>
+            <h1 id="username">Xush kelibsiz!</h1>
+            <span class="status-badge">Premium Foydalanuvchi</span>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-title">Sizning balansingiz</div>
+            <div class="balance-value">1,250 🪙</div>
+        </div>
+
+        <div class="btn-grid">
+            <button class="neon-btn" onclick="sendData('🔥 Bonus olish')">Kunlik Bonus</button>
+            <button class="neon-btn secondary" onclick="sendData('🎮 Oʻyinga kirish')">Oʻyinni Boshlash</button>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Saytni telefonda to'liq ekran ochadi
+
+        // Telegramdan foydalanuvchi ismini olish
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
+        }
+
+        function sendData(text) {
+            tg.sendData(text); // Tugma bosilganda botga xabar yuboradi
+            tg.close(); // Saytni yopadi
+        }
+    </script>
+</body>
+</html>
